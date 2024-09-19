@@ -10,12 +10,42 @@ const Header = () => {
   )
 }
 
+// NOTE FOR ME: Be careful with the names... Components and props attributes
+// shold be named different
+
+//** Part component (Exercise 1.2) */
+const Part = (props) => {
+  
+  console.log(
+      "#DEBUG ->"
+    , props.partName
+    , props.exercises);
+
+  return (
+    <p>{props.partName} {props.exercises}</p>
+  )
+}
+
+
 //** Content componet (Exercise 1.1)*/
 const Content = (props) => {
-  console.log(props.part,props.exercise)
+  
+  // Auxiliary variables
+  var aux = [];
+
+  console.log(
+      "#DEBUG (Content)->"
+    , props.parts
+    , props.parts.length
+  );
+  
+  for(let i = 0; i < props.parts.length; i++) {
+    aux.push(<Part key={i} partName={props.parts[i]} exercises={props.partsExercises[i]} />);
+  }
+  
   return (
     <div>
-      <p>{props.part} {props.exercise}</p>
+      {aux}
     </div>
   )
 }
@@ -23,11 +53,13 @@ const Content = (props) => {
 //** Total component (Exercise 1.1)*/
 const Total = (props) => {
   
+  // Auxiliary variables
   var aux = 0
+
   props.exercises.forEach(
     x => aux += x)
 
-  console.log(aux)
+  console.log("#DEBUG -> TOTAL EXERCISES",aux)
   
   return (
     <p><b>Number of exercises:</b> {aux}</p>
@@ -38,17 +70,13 @@ const Total = (props) => {
 //** App component */
 const App = () => {
 
-  var aux = []
-
-  for(let i = 0; i < courseParts.length; i++){
-    aux.push(<Content key={i} part={courseParts[i]} exercise={coursePartsExercises[i]}></Content>)
-  }
+  console.clear();
 
   return (
     <div>
-      <Header></Header>
-      {aux}
-      <Total exercises={coursePartsExercises}></Total>
+      <Header />
+      <Content parts={courseParts} partsExercises={coursePartsExercises}/>
+      <Total exercises={coursePartsExercises} />
     </div>
   )
 }
