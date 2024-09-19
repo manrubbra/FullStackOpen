@@ -41,7 +41,7 @@ const App = () => {
   var aux = []
 
   for(let i = 0; i < courseParts.length; i++){
-    aux.push(<Content id={i} part={courseParts[i]} exercise={coursePartsExercises[i]}></Content>)
+    aux.push(<Content key={i} part={courseParts[i]} exercise={coursePartsExercises[i]}></Content>)
   }
 
   return (
