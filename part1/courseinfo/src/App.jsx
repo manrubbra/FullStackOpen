@@ -71,7 +71,6 @@ const Total = (props) => {
 const App = () => {
 
   console.clear();
-
   
   return (
     <div>
