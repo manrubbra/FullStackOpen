@@ -31,28 +31,14 @@ const Content = (props) => {
   // Depending on the exercise is rendered different component
   var aux = [];
   console.log('#DEBUG (Content)->', props);
-
-  if (props.exercise == '1.1') {
-    // Auxiliary variables
-    for (let i = 0; i < props.parts.length; i++) {
-      aux.push(
-        <Part
-          key={i}
-          partName={props.parts[i]}
-          exercises={props.partsExercises[i]}
-        />
-      );
-    }
-  } else if (props.exercise == '1.3') {
-    for (let i = 0; i < props.partsObject.length; i++) {
-      aux.push(
-        <Part
-          key={i}
-          partName={props.partsObject[i].name}
-          exercises={props.partsObject[i].exercises}
-        />
-      );
-    }
+  for (let i = 0; i < props.parts.length; i++) {
+    aux.push(
+      <Part
+        key={i}
+        partName={props.parts[i].name}
+        exercises={props.parts[i].exercises}
+      />
+    );
   }
   return <div>{aux}</div>;
 };
@@ -77,37 +63,27 @@ const Total = (props) => {
 const App = () => {
   // Object definition:
 
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10
-  };
-
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
-  };
-
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  };
-
-  const partsObject = [];
-  partsObject.push(part1);
-  partsObject.push(part2);
-  partsObject.push(part3);
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ];
 
   console.clear();
 
   return (
     <div>
       <Header />
-      <Content
-        exercise="1.3"
-        parts={courseParts}
-        partsExercises={coursePartsExercises}
-        partsObject={partsObject}
-      />
+      <Content parts={parts} />
       <Total exercises={coursePartsExercises} />
     </div>
   );
