@@ -1,21 +1,9 @@
-//** Constants (Exercise 1.1)*/
-const course = 'Half Stack application development'; // Keep here the constant instead of move to App method
-const courseParts = [
-  'Fundamentals of React',
-  'Using props to pass data',
-  'State of a component'
-];
-const coursePartsExercises = [10, 7, 14];
-
 //** Header component (Exercise 1.1)*/
-const Header = () => {
-  return <h1>{course}</h1>;
+const Header = (props) => {
+  return <h1>{props.course.name}</h1>;
 };
 
-// NOTE FOR ME: Be careful with the names... Components and props attributes
-// shold be named different
-
-//** Part component (Exercise 1.2) */
+//** Part component */
 const Part = (props) => {
   console.log('#DEBUG ->', props.partName, props.exercises);
 
@@ -26,29 +14,29 @@ const Part = (props) => {
   );
 };
 
-//** Content componet (Exercise 1.1)*/
+//** Content componet */
 const Content = (props) => {
   // Depending on the exercise is rendered different component
   var aux = [];
   console.log('#DEBUG (Content)->', props);
-  for (let i = 0; i < props.parts.length; i++) {
+  for (let i = 0; i < props.course.parts.length; i++) {
     aux.push(
       <Part
         key={i}
-        partName={props.parts[i].name}
-        exercises={props.parts[i].exercises}
+        partName={props.course.parts[i].name}
+        exercises={props.course.parts[i].exercises}
       />
     );
   }
   return <div>{aux}</div>;
 };
 
-//** Total component (Exercise 1.1)*/
+//** Total component */
 const Total = (props) => {
   // Auxiliary variables
   var aux = 0;
 
-  props.exercises.forEach((x) => (aux += x));
+  props.course.parts.forEach((x) => (aux += x.exercises));
 
   console.log('#DEBUG -> TOTAL EXERCISES', aux);
 
@@ -62,29 +50,31 @@ const Total = (props) => {
 //** App component */
 const App = () => {
   // Object definition:
-
-  const parts = [
-    {
-      name: 'Fundamentals of React',
-      exercises: 10
-    },
-    {
-      name: 'Using props to pass data',
-      exercises: 7
-    },
-    {
-      name: 'State of a component',
-      exercises: 14
-    }
-  ];
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
+  };
 
   console.clear();
 
   return (
     <div>
-      <Header />
-      <Content parts={parts} />
-      <Total exercises={coursePartsExercises} />
+      <Header course={course} />
+      <Content course={course} />
+      <Total course={course} />
     </div>
   );
 };
