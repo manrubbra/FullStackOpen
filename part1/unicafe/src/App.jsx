@@ -24,18 +24,26 @@ const Display = ({ text, value }) => {
 
 const Statistic = (props) => {
   console.log(props);
-  return (
-    <div>
-      <Title title="Statistic" />
-      <Display text="Good" value={props.statistic.good} />
-      <Display text="Neutral" value={props.statistic.neutral} />
-      <Display text="Bad" value={props.statistic.bad} />
-      <br></br>
-      <Display text="Total" value={props.statistic.total} />
-      <Display text="Average" value={props.statistic.average} />
-      <Display text="Positive" value={props.statistic.positive} />
-    </div>
-  );
+  if (props.statistic.total > 0) {
+    return (
+      <div>
+        <Title title="Statistic" />
+        <Display text="Good" value={props.statistic.good} />
+        <Display text="Neutral" value={props.statistic.neutral} />
+        <Display text="Bad" value={props.statistic.bad} />
+        <br></br>
+        <Display text="Total" value={props.statistic.total} />
+        <Display text="Average" value={props.statistic.average} />
+        <Display text="Positive" value={props.statistic.positive} />
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <p>No feedback given</p>
+      </div>
+    );
+  }
 };
 
 const App = () => {
