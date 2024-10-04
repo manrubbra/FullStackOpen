@@ -22,6 +22,22 @@ const Display = ({ text, value }) => {
   );
 };
 
+const Statistic = (props) => {
+  console.log(props);
+  return (
+    <div>
+      <Title title="Statistic" />
+      <Display text="Good" value={props.statistic.good} />
+      <Display text="Neutral" value={props.statistic.neutral} />
+      <Display text="Bad" value={props.statistic.bad} />
+      <br></br>
+      <Display text="Total" value={props.statistic.total} />
+      <Display text="Average" value={props.statistic.average} />
+      <Display text="Positive" value={props.statistic.positive} />
+    </div>
+  );
+};
+
 const App = () => {
   // guarda los clics de cada botón en su propio estado
   const [good, setGood] = useState(0);
@@ -32,6 +48,17 @@ const App = () => {
   const [average, setAverage] = useState(0);
   const [positive, setPositive] = useState(0);
 
+  // Create a object with the statistic info
+  var statisticValues = {
+    good: good,
+    neutral: neutral,
+    bad: bad,
+    total: total,
+    average: average,
+    positive: positive
+  };
+
+  // Auxiliary variables
   var updateGood;
   var updateNeutral;
   var updateBad;
@@ -78,14 +105,8 @@ const App = () => {
       <Button text="Good" onClick={handleGood} />
       <Button text="Neutral" onClick={handleNeutral} />
       <Button text="Bad" onClick={handleBad} />
-      <Title title="Statistic" />
-      <Display text="Good" value={good} />
-      <Display text="Neutral" value={neutral} />
-      <Display text="Bad" value={bad} />
       <hr></hr>
-      <Display text="Total" value={total} />
-      <Display text="Average" value={average} />
-      <Display text="Positive" value={positive} />
+      <Statistic statistic={statisticValues} />
     </div>
   );
 };
