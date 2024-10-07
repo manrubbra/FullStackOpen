@@ -4,6 +4,14 @@ https://fullstackopen.com/es/
 
 **NPM Commands**
 
+# npm 6.x (desactualizado, pero aun en uso por algunos):
+
+npm create vite@latest part1 --template react
+
+# npm 7+, el doble guion adicional es necesario:
+
+npm create vite@latest part1 -- --template react
+
 - Start the app (folder where the app is): npm run dev
   **Git commands notes:**
 
