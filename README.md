@@ -13,7 +13,8 @@ npm create vite@latest part1 --template react
 npm create vite@latest part1 -- --template react
 
 - Start the app (folder where the app is): npm run dev
-  **Git commands notes:**
+
+**Git commands notes:**
 
 - Set the user:
   git config --global user.name "Your name"
