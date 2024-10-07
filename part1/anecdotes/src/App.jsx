@@ -11,34 +11,44 @@ const anecdotes = [
   'The only way to go fast, is to go well.'
 ];
 
-const Button = ({ onClick }) => {
-  return (
-    <div>
-      <button onClick={onClick}>Next Anecdote</button>
-    </div>
-  );
+const Button = ({ onClick, title }) => {
+  return <button onClick={onClick}>{title}</button>;
 };
 
 const App = () => {
-  const [selected, setSelected] = useState(0);
+  /* Build score array */
+  var aux = [];
+  anecdotes.forEach((x) => {
+    aux.push(0);
+  });
 
+  const [selected, setSelected] = useState(0);
+  const [score, setScore] = useState(aux);
+
+  // Random number in base of the length of anecdotesgg
   const RandomNumber = () => {
-    var min = 0;
     var max = anecdotes.length;
     var rdn = Math.random();
-
     var result = Math.round(rdn * max, 0);
-
     console.log('RESULT:', result);
-
     setSelected(result);
+  };
+
+  // Set the vote in the variable score
+  const SetScore = () => {
+    var backup = [...score];
+    backup[selected]++;
+    setScore(backup);
+    console.log(backup);
+    console.log(score);
   };
 
   return (
     <div>
       <div>{anecdotes[selected]}</div>
       <br></br>
-      <Button onClick={RandomNumber}></Button>
+      <Button title="Next Anecdote" onClick={RandomNumber}></Button>
+      <Button title="Vote" onClick={SetScore}></Button>
     </div>
   );
 };
