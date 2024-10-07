@@ -15,6 +15,14 @@ const Button = ({ onClick, title }) => {
   return <button onClick={onClick}>{title}</button>;
 };
 
+const Title = ({ title }) => {
+  return (
+    <div>
+      <h1>{title}</h1>
+    </div>
+  );
+};
+
 const App = () => {
   /* Build score array */
   var aux = [];
@@ -24,6 +32,7 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [score, setScore] = useState(aux);
+  const [mostVoted, SetMostVoted] = useState(0);
 
   // Random number in base of the length of anecdotesgg
   const RandomNumber = () => {
@@ -38,17 +47,28 @@ const App = () => {
   const SetScore = () => {
     var backup = [...score];
     backup[selected]++;
+
+    // Update the score
     setScore(backup);
     console.log(backup);
     console.log(score);
+
+    // Find most voted
+    var max = Math.max(...backup);
+    var index = backup.indexOf(max);
+    SetMostVoted(index);
   };
 
   return (
     <div>
+      <Title title="Anecdote of the day"></Title>
       <div>{anecdotes[selected]}</div>
       <br></br>
       <Button title="Next Anecdote" onClick={RandomNumber}></Button>
       <Button title="Vote" onClick={SetScore}></Button>
+      <hr></hr>
+      <Title title="Anecdote with most votes"></Title>
+      <div>{anecdotes[mostVoted]}</div>
     </div>
   );
 };
