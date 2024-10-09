@@ -1,10 +1,11 @@
 const Header = ({ course }) => <h1>{course}</h1>;
 
 const Total = ({ parts }) => {
-  var sum = 0;
-  parts.forEach((x) => {
-    sum += x.exercises;
-  });
+  // Refactor the code for the reduce function
+  const ini = 0;
+  const sum = parts.reduce((s, p) => s + p.exercises, ini);
+  console.log('#DEBUG->', sum);
+
   return <p>Total of {sum} exercises</p>;
 };
 
