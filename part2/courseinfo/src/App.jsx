@@ -9,18 +9,16 @@ const Total = ({ parts }) => {
 };
 
 const Part = ({ part }) => (
-  <p>
+  <li key={part.id}>
     {part.name} {part.exercises}
-  </p>
+  </li>
 );
 
 const Content = ({ parts }) => {
   return (
     <ul>
       {parts.map((x) => (
-        <li key={x.id}>
-          {x.name} - <b>{x.exercises}</b>
-        </li>
+        <Part key={x.id} part={x} /> // Little bit redundant...
       ))}
     </ul>
   );
