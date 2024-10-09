@@ -5,7 +5,7 @@ const Total = ({ parts }) => {
   parts.forEach((x) => {
     sum += x.exercises;
   });
-  return <p>Number of exercises {sum}</p>;
+  return <p>Total of {sum} exercises</p>;
 };
 
 const Part = ({ part }) => (
@@ -55,6 +55,11 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   };
