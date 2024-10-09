@@ -10,6 +10,11 @@ const App = () => {
   };
 
   const onSubmitButton = (event) => {
+    if (persons.find((p) => p.name === newName)) {
+      alert(`${newName} is already added to the phonebook`);
+      return;
+    }
+
     var updateAgenda = persons.concat({
       name: newName,
       id: persons.length + 1
