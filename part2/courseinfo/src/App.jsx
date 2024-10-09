@@ -1,39 +1,5 @@
-const Header = ({ title }) => <h1>{title}</h1>;
-
-const Total = ({ parts }) => {
-  // Refactor the code for the reduce function
-  const ini = 0;
-  const sum = parts.reduce((s, p) => s + p.exercises, ini);
-  console.log('#DEBUG->', sum);
-
-  return <p>Total of {sum} exercises</p>;
-};
-
-const Part = ({ part }) => (
-  <li key={part.id}>
-    {part.name} {part.exercises}
-  </li>
-);
-
-const Content = ({ parts }) => {
-  return (
-    <ul>
-      {parts.map((x) => (
-        <Part key={x.id} part={x} /> // Little bit redundant...
-      ))}
-    </ul>
-  );
-};
-
-const Course = ({ course }) => {
-  return (
-    <div>
-      <Header title={course.name} />
-      <Content parts={course.parts} />
-      <Total parts={course.parts} />
-    </div>
-  );
-};
+import Course from './components/Course';
+import Header from './components/Header';
 
 const App = () => {
   const courses = [
