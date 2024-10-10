@@ -1,27 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CustomTitle from './components/CustomTitle';
 import Agenda from './components/Agenda';
 import InputGroup from './components/InputGroup';
+import axios from 'axios';
 
 const App = () => {
+  useEffect(() => {
+    console.log('effect');
+
+    const eventHandler = (response) => {
+      var aux = response.data;
+      console.log('#DEBUG (AXIOS) - ', response.data);
+
+      setPersons(aux);
+      setBackupPersons(aux);
+    };
+
+    const promise = axios.get('http://localhost:3001/persons');
+    promise.then(eventHandler);
+  }, []);
+
   // Hook to chage the title of Agenda area
   const [agendaTitle, setAgendaTitle] = useState('Agenda');
 
   // Hook to change the person list which is shown
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]);
+  const [persons, setPersons] = useState([]);
 
   // Hook to keep the real agenda (with no filter) and it's not shown
-  const [backupPersons, setBackupPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]);
+  const [backupPersons, setBackupPersons] = useState([]);
 
   //#region Filter. Everything regarding to the filter area
 
@@ -38,16 +44,20 @@ const App = () => {
     console.log('#DEBUG - Filter', filter);
     setFilter(filter);
 
-    var auxPersons = [];
+    if (filter != '') {
+      var auxPersons = [];
 
-    backupPersons.forEach((p) => {
-      if (p.name.toLowerCase().includes(filter.toLowerCase())) {
-        auxPersons = auxPersons.concat(p);
-      }
-    });
+      backupPersons.forEach((p) => {
+        if (p.name.toLowerCase().includes(filter.toLowerCase())) {
+          auxPersons = auxPersons.concat(p);
+        }
+      });
 
-    setAgendaTitle('Agenda (filtered)');
-    setPersons(auxPersons);
+      setAgendaTitle('Agenda (filtered)');
+      setPersons(auxPersons);
+    } else {
+      setPersons(backupPersons);
+    }
   };
 
   // Control of event in order to wipe the filter criteria
@@ -86,7 +96,7 @@ const App = () => {
 
   // Control event add new contact
   const onClickNewContact = (event) => {
-    if (persons.find((p) => p.name === newPerson.name)) {
+    if (backupPersons.find((p) => p.name === newPerson.name)) {
       alert(`${newPerson.name} is already added to the phonebook`);
       return;
     }
