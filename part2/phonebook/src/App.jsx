@@ -1,68 +1,140 @@
 import { useState } from 'react';
+import CustomTitle from './components/CustomTitle';
+import Agenda from './components/Agenda';
+import InputGroup from './components/InputGroup';
 
 const App = () => {
+  // Hook to chage the title of Agenda area
+  const [agendaTitle, setAgendaTitle] = useState('Agenda');
+
+  // Hook to change the person list which is shown
   const [persons, setPersons] = useState([
-    { id: 1, name: 'Arto Hellas', number: '4545454545' }
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]);
-  const [newPerson, setNewPerson] = useState({ name: '', number: '' });
 
+  // Hook to keep the real agenda (with no filter) and it's not shown
+  const [backupPersons, setBackupPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456', id: 1 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
+  ]);
+
+  //#region Filter. Everything regarding to the filter area
+
+  // Hook to control the filter criteria
+  const [filter, setFilter] = useState('');
+
+  // Cotrol of event, filter input changes
+  const onChangeFilter = (event) => {
+    filterAgenda(event.target.value);
+  };
+
+  // Function which filter the agende according to the criteria (filter)
+  const filterAgenda = (filter) => {
+    console.log('#DEBUG - Filter', filter);
+    setFilter(filter);
+
+    var auxPersons = [];
+
+    backupPersons.forEach((p) => {
+      if (p.name.toLowerCase().includes(filter.toLowerCase())) {
+        auxPersons = auxPersons.concat(p);
+      }
+    });
+
+    setAgendaTitle('Agenda (filtered)');
+    setPersons(auxPersons);
+  };
+
+  // Control of event in order to wipe the filter criteria
+  const onClickFilter = (event) => {
+    console.log('#DEBUG - Filter click');
+
+    setPersons(backupPersons);
+    setFilter('');
+    setAgendaTitle('Agenda');
+  };
+
+  //#endregion
+
+  //#region New contact
+
+  // Hook to save the new contact
+  const [newPerson, setNewPerson] = useState({
+    name: '',
+    number: '',
+    id: 0
+  });
+
+  // Control event of the new contact name
   const onChangeName = (event) => {
-    var updateNewPerson = { ...newPerson };
-    updateNewPerson.name = event.target.value;
-    console.log(updateNewPerson);
+    var updateNewPerson = { ...newPerson, name: event.target.value };
+    console.log('#DEBUG - ', updateNewPerson);
     setNewPerson(updateNewPerson);
   };
 
+  // Control event of the new contact number
   const onChangeNumber = (event) => {
-    var updateNewPerson = { ...newPerson };
-    updateNewPerson.number = event.target.value;
-    console.log(updateNewPerson);
+    var updateNewPerson = { ...newPerson, number: event.target.value };
+    console.log('#DEBUG - ', updateNewPerson);
     setNewPerson(updateNewPerson);
   };
 
-  const onSubmitButton = (event) => {
+  // Control event add new contact
+  const onClickNewContact = (event) => {
     if (persons.find((p) => p.name === newPerson.name)) {
       alert(`${newPerson.name} is already added to the phonebook`);
       return;
     }
 
-    var updateAgenda = persons.concat({
-      ...newPerson,
-      id: persons.length + 1
+    var auxContact = { ...newPerson, id: backupPersons.length + 1 };
+
+    setBackupPersons(backupPersons.concat(auxContact));
+
+    filterAgenda(filter);
+
+    setNewPerson({
+      name: '',
+      number: '',
+      id: 0
     });
-    setPersons(updateAgenda);
-    setNewPerson({ name: '', number: '' });
   };
+
+  //#endregion
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <form>
-        <div>
-          <div>
-            name:
-            <input value={newPerson.name} onChange={onChangeName} />
-          </div>
-          <div>
-            number:
-            <input value={newPerson.number} onChange={onChangeNumber} />
-          </div>
-        </div>
-        <div>
-          <button type="button" onClick={onSubmitButton}>
-            add
-          </button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
+      <CustomTitle level="1" title="Phonebook Exercise" />
+      <hr></hr>
       <div>
-        <ul>
-          {persons.map((p) => (
-            <li key={p.id}>
-              {p.name} - {p.number}
-            </li>
-          ))}
-        </ul>
+        <CustomTitle level="4" title="Filter" />
+        <InputGroup
+          labels={['Criteria']}
+          inputs={[filter]}
+          onChanges={[onChangeFilter]}
+          buttonLabels={['Clear filter']}
+          buttonOnClicks={[onClickFilter]}
+        />
+      </div>
+      <hr></hr>
+      <div>
+        <CustomTitle level="4" title="New contact" />
+        <InputGroup
+          labels={['Name', 'Number']}
+          inputs={[newPerson.name, newPerson.number]}
+          onChanges={[onChangeName, onChangeNumber]}
+          buttonLabels={['Add new contact']}
+          buttonOnClicks={[onClickNewContact]}
+        />
+      </div>
+      <hr></hr>
+      <div>
+        <CustomTitle level="4" title={agendaTitle} />
+        <Agenda persons={persons} />
       </div>
     </div>
   );
