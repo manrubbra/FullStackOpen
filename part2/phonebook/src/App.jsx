@@ -36,18 +36,20 @@ const App = () => {
 
   // Cotrol of event, filter input changes
   const onChangeFilter = (event) => {
-    filterAgenda(event.target.value);
+    filterAgenda(event.target.value, backupPersons);
   };
 
   // Function which filter the agende according to the criteria (filter)
-  const filterAgenda = (filter) => {
+  const filterAgenda = (filter, list) => {
     console.log('#DEBUG - Filter', filter);
     setFilter(filter);
+
+    console.log('#DEBUG - Backup persons list', list);
 
     if (filter != '') {
       var auxPersons = [];
 
-      backupPersons.forEach((p) => {
+      list.forEach((p) => {
         if (p.name.toLowerCase().includes(filter.toLowerCase())) {
           auxPersons = auxPersons.concat(p);
         }
@@ -56,7 +58,7 @@ const App = () => {
       setAgendaTitle('Agenda (filtered)');
       setPersons(auxPersons);
     } else {
-      setPersons(backupPersons);
+      setPersons(list);
     }
   };
 
@@ -105,7 +107,7 @@ const App = () => {
 
     setBackupPersons(backupPersons.concat(auxContact));
 
-    filterAgenda(filter);
+    filterAgenda(filter, backupPersons.concat(auxContact));
 
     setNewPerson({
       name: '',
