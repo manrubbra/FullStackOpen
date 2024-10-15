@@ -74,6 +74,17 @@ const App = () => {
 
   //#region New contact
 
+  // Calculate the next ID
+  const nextId = (contacts) => {
+    var maxId = 0;
+
+    contacts.forEach((c) => {
+      if (parseInt(c.id) > maxId) maxId = parseInt(c.id);
+    });
+
+    return String(maxId + 1);
+  };
+
   // Hook to save the new contact
   const [newPerson, setNewPerson] = useState({
     name: '',
@@ -102,7 +113,7 @@ const App = () => {
       return;
     }
 
-    var auxContact = { ...newPerson, id: backupPersons.length + 1 };
+    var auxContact = { ...newPerson, id: nextId(backupPersons) };
 
     setBackupPersons(backupPersons.concat(auxContact));
 
@@ -118,6 +129,29 @@ const App = () => {
       number: '',
       id: 0
     });
+  };
+
+  // Control event delete contact
+  const onClickDelete = (event) => {
+    console.log('#DEBUG - DELETE', event.target);
+
+    var name = backupPersons.find((c) => c.id == event.target.id).name;
+
+    if (window.confirm(`Do you really want to delete ${name}?`)) {
+      personsServices.remove(event.target.id).then((data) => {
+        console.log('#DEBUG - Contact deleted', data);
+        // Place hera the call to the GetAll because the promise is
+        // async
+        personsServices.getAll().then((data) => {
+          var aux = data;
+          console.log('#DEBUG (Service Person) - ', data);
+          // Update the variables
+          setPersons(aux);
+          setBackupPersons(aux);
+          filterAgenda(filter, aux);
+        });
+      });
+    }
   };
 
   //#endregion
@@ -150,7 +184,7 @@ const App = () => {
       <hr></hr>
       <div>
         <CustomTitle level="4" title={agendaTitle} />
-        <Agenda persons={persons} />
+        <Agenda persons={persons} onClickDelete={onClickDelete} />
       </div>
     </div>
   );

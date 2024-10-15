@@ -1,5 +1,6 @@
-const Agenda = ({ persons }) => {
+const Agenda = ({ persons, onClickDelete }) => {
   console.log('#DEBUG - ', persons);
+
   return (
     <div>
       <table>
@@ -11,6 +12,12 @@ const Agenda = ({ persons }) => {
               <td>Name: {p.name}</td>
               <td>|</td>
               <td>Number: {p.number}</td>
+              <td>|</td>
+              <td>
+                <button id={p.id} type="button" onClick={onClickDelete}>
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
