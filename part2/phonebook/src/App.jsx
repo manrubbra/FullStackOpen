@@ -109,20 +109,39 @@ const App = () => {
   // Control event add new contact
   const onClickNewContact = (event) => {
     if (backupPersons.find((p) => p.name === newPerson.name)) {
-      alert(`${newPerson.name} is already added to the phonebook`);
-      return;
+      var message = `${newPerson.name} is already added to the phonebook. Do you update the phonenumber?`;
+
+      if (window.confirm(message)) {
+        var person = backupPersons.find((p) => p.name === newPerson.name);
+        personsServices
+          .update(person.id, { ...newPerson, id: person.id })
+          .then((updated) => {
+            console.log('#DEBUG - Contac updated', updated);
+            personsServices.getAll().then((data) => {
+              var aux = data;
+              console.log('#DEBUG (Service Person) - ', data);
+              // Update the variables
+              setPersons(aux);
+              setBackupPersons(aux);
+              filterAgenda(filter, aux);
+            });
+          });
+      } else {
+        // Cancel the process
+        return;
+      }
+    } else {
+      var auxContact = { ...newPerson, id: nextId(backupPersons) };
+
+      setBackupPersons(backupPersons.concat(auxContact));
+
+      filterAgenda(filter, backupPersons.concat(auxContact));
+
+      // Keep the contact in the backend
+      personsServices
+        .create(auxContact)
+        .then((data) => console.log('#DEBUG - New contact: ', data));
     }
-
-    var auxContact = { ...newPerson, id: nextId(backupPersons) };
-
-    setBackupPersons(backupPersons.concat(auxContact));
-
-    filterAgenda(filter, backupPersons.concat(auxContact));
-
-    // Keep the contact in the backend
-    personsServices
-      .create(auxContact)
-      .then((data) => console.log('#DEBUG - New contact: ', data));
 
     setNewPerson({
       name: '',
