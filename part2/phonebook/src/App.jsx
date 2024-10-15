@@ -30,7 +30,7 @@ const App = () => {
   const [backupPersons, setBackupPersons] = useState([]);
 
   // Hook to notification message
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState({ message: null, type: 'success' });
 
   //#region Filter. Everything regarding to the filter area
 
@@ -128,8 +128,11 @@ const App = () => {
               setPersons(aux);
               setBackupPersons(aux);
               filterAgenda(filter, aux);
-
-              setMessage(`${updated.name} was updated`);
+              var message = {
+                message: `${updated.name} was updated`,
+                type: 'success'
+              };
+              setMessage(message);
             });
           });
       } else {
@@ -144,11 +147,16 @@ const App = () => {
         console.log('#DEBUG - New contact: ', data);
         setBackupPersons(backupPersons.concat(auxContact));
         filterAgenda(filter, backupPersons.concat(auxContact));
-        setMessage(`${data.name} was added`);
+
+        var message = {
+          message: `${data.name} was added`,
+          type: 'success'
+        };
+        setMessage(message);
       });
     }
     setTimeout(() => {
-      setMessage(null);
+      setMessage({ message: null, type: 'success' });
     }, 2500);
     setNewPerson({
       name: '',
@@ -164,19 +172,37 @@ const App = () => {
     var name = backupPersons.find((c) => c.id == event.target.id).name;
 
     if (window.confirm(`Do you really want to delete ${name}?`)) {
-      personsServices.remove(event.target.id).then((data) => {
-        console.log('#DEBUG - Contact deleted', data);
-        // Place hera the call to the GetAll because the promise is
-        // async
-        personsServices.getAll().then((data) => {
-          var aux = data;
-          console.log('#DEBUG (Service Person) - ', data);
-          // Update the variables
-          setPersons(aux);
-          setBackupPersons(aux);
-          filterAgenda(filter, aux);
+      personsServices
+        .remove(event.target.id)
+        .then((deleted) => {
+          console.log('#DEBUG - Contact deleted', deleted);
+          // Place hera the call to the GetAll because the promise is
+          // async
+          personsServices.getAll().then((data) => {
+            var aux = data;
+            console.log('#DEBUG (Service Person) - ', data);
+            // Update the variables
+            setPersons(aux);
+            setBackupPersons(aux);
+            filterAgenda(filter, aux);
+            var message = {
+              message: `${deleted.name} was deleted`,
+              type: 'success'
+            };
+            setMessage(message);
+            setTimeout(() => {
+              setMessage({ message: null, type: 'success' });
+            }, 2500);
+          });
+        })
+        .catch((error) => {
+          console.log('#DEBUG - ERROR --------->', error);
+          var error = { message: error.message, type: 'error' };
+          setMessage(error);
+          setTimeout(() => {
+            setMessage({ message: null, type: 'success' });
+          }, 2500);
         });
-      });
     }
   };
 
