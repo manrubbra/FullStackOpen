@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import CustomTitle from './components/CustomTitle';
 import Agenda from './components/Agenda';
 import InputGroup from './components/InputGroup';
+import Notification from './components/Notification';
 import personsServices from './services/persons';
 
 const App = () => {
@@ -27,6 +28,9 @@ const App = () => {
 
   // Hook to keep the real agenda (with no filter) and it's not shown
   const [backupPersons, setBackupPersons] = useState([]);
+
+  // Hook to notification message
+  const [message, setMessage] = useState(null);
 
   //#region Filter. Everything regarding to the filter area
 
@@ -124,6 +128,8 @@ const App = () => {
               setPersons(aux);
               setBackupPersons(aux);
               filterAgenda(filter, aux);
+
+              setMessage(`${updated.name} was updated`);
             });
           });
       } else {
@@ -133,16 +139,17 @@ const App = () => {
     } else {
       var auxContact = { ...newPerson, id: nextId(backupPersons) };
 
-      setBackupPersons(backupPersons.concat(auxContact));
-
-      filterAgenda(filter, backupPersons.concat(auxContact));
-
       // Keep the contact in the backend
-      personsServices
-        .create(auxContact)
-        .then((data) => console.log('#DEBUG - New contact: ', data));
+      personsServices.create(auxContact).then((data) => {
+        console.log('#DEBUG - New contact: ', data);
+        setBackupPersons(backupPersons.concat(auxContact));
+        filterAgenda(filter, backupPersons.concat(auxContact));
+        setMessage(`${data.name} was added`);
+      });
     }
-
+    setTimeout(() => {
+      setMessage(null);
+    }, 2500);
     setNewPerson({
       name: '',
       number: '',
@@ -178,6 +185,7 @@ const App = () => {
   return (
     <div>
       <CustomTitle level="1" title="Phonebook Exercise" />
+      <Notification message={message} />
       <hr></hr>
       <div>
         <CustomTitle level="4" title="Filter" />
