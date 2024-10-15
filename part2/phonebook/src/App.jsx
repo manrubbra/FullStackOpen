@@ -2,22 +2,21 @@ import { useState, useEffect } from 'react';
 import CustomTitle from './components/CustomTitle';
 import Agenda from './components/Agenda';
 import InputGroup from './components/InputGroup';
-import axios from 'axios';
+import personsServices from './services/persons';
 
 const App = () => {
   useEffect(() => {
     console.log('effect');
 
-    const eventHandler = (response) => {
-      var aux = response.data;
-      console.log('#DEBUG (AXIOS) - ', response.data);
+    const promise = personsServices.getAll();
+
+    promise.then((data) => {
+      var aux = data;
+      console.log('#DEBUG (Service Person) - ', data);
 
       setPersons(aux);
       setBackupPersons(aux);
-    };
-
-    const promise = axios.get('http://localhost:3001/persons');
-    promise.then(eventHandler);
+    });
   }, []);
 
   // Hook to chage the title of Agenda area
@@ -108,6 +107,11 @@ const App = () => {
     setBackupPersons(backupPersons.concat(auxContact));
 
     filterAgenda(filter, backupPersons.concat(auxContact));
+
+    // Keep the contact in the backend
+    personsServices
+      .create(auxContact)
+      .then((data) => console.log('#DEBUG - New contact: ', data));
 
     setNewPerson({
       name: '',
