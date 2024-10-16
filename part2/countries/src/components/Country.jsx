@@ -25,6 +25,7 @@ const Country = ({ countries }) => {
                 <li>{c}</li>
               ))}
             </ul>
+            <img src={selected.flags.png} alt="Country flag" />
           </div>
         </div>
       </div>
