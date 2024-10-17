@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import countryService from './services/CountryService';
+import WeatherService from './services/WeatherService';
 import Country from './components/Country';
+import Weather from './components/CityWeather';
 
 const App = () => {
   // Hook for filter
@@ -10,6 +12,10 @@ const App = () => {
   const [countries, setCountries] = useState([]);
   const [showCountries, setShowCountries] = useState([]);
 
+  // Hook for the weather country
+  const [countrySelected, setCountrySelected] = useState(null);
+  const [weatherInfo, setWeatherInfo] = useState(null);
+
   // Render the page
   useEffect(() => {
     countryService.getAll().then((data) => {
@@ -18,6 +24,20 @@ const App = () => {
       setShowCountries(data);
     });
   }, []);
+
+  // Render the weather
+  useEffect(() => {
+    if (null != countrySelected) {
+      console.log('#DEBUG - Country selected', countrySelected);
+      WeatherService.getWeather(
+        countrySelected.capital[0],
+        countrySelected.cca2
+      ).then((data) => setWeatherInfo(data));
+    } else {
+      console.log('#DEBUG - Country selected RESET', countrySelected);
+      setWeatherInfo(null);
+    }
+  }, [countrySelected]);
 
   //** This method control the event of change filter value */
   const onFilterChange = (event) => {
@@ -37,8 +57,20 @@ const App = () => {
         }
       });
       console.log('#DEBUG - Change filete. Countries filtered:', aux.length);
-      // Update country list
-      setShowCountries(aux);
+      // Update country list if the length change
+      console.log('# DEBUG - Lenght aux:', aux.length);
+      console.log('# DEBUG - Lenght show:', showCountries.length);
+      if (aux.length != showCountries.length) {
+        console.log('# DEBUG - Set list !!!!');
+        setShowCountries(aux);
+        // Set the country selected to modify the weather component
+        if (aux.length == 1) {
+          console.log('#DEBUG - Set the country', aux[0].name.common);
+          setCountrySelected(aux[0]);
+        } else {
+          setCountrySelected(null);
+        }
+      }
     } else {
       // Reset the country list
       setShowCountries(countries);
@@ -53,6 +85,7 @@ const App = () => {
     setFilter(countryName);
     // Set just one element in the country list to show
     setShowCountries([country]);
+    setCountrySelected(country);
   };
 
   return (
@@ -65,6 +98,7 @@ const App = () => {
       </div>
       <hr></hr>
       <Country countries={showCountries} onClick={onClickShowDetails} />
+      <Weather weatherInfo={weatherInfo} />
     </div>
   );
 };

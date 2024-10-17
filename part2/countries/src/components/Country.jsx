@@ -1,8 +1,10 @@
 const Country = ({ countries, onClick }) => {
   console.log('#DEBUG - Component - Lenght:', countries.length);
 
-  // With this conditions render different elements in base of
-  // the number of register
+  var selected = null;
+
+  //   With this conditions render different elements in base of
+  //   the number of register
   if (countries.length > 5) {
     // More than five matches
     return (
@@ -12,7 +14,8 @@ const Country = ({ countries, onClick }) => {
     );
   } else if (countries.length == 1) {
     // Just one match (automatic show details)
-    var selected = countries[0];
+    selected = countries[0];
+
     return (
       <div>
         <div>
