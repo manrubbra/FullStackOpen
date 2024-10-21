@@ -29,9 +29,22 @@ app.get('/api/persons', (request, response) => {
   response.json(contacts);
 });
 
+app.get('/api/persons/:id', (request, response) => {
+  var id = request.params.id;
+  console.log('#DEBUG -> Id: ', id);
+
+  var contact = contacts.find((c) => c.id == id);
+
+  if (contact) {
+    response.json(contact);
+  } else {
+    console.log('Contact not found!');
+    response.status(404).end();
+  }
+});
+
 app.get('/info', (request, response) => {
   console.log('#DEBUG -> Call to info');
-  console.log('#DEBUG -> Request object', request);
 
   let htmlResponse = `<p>Phonebook has info for ${contacts.length} people</p>`;
   htmlResponse += '<br/>';
