@@ -25,7 +25,19 @@ let contacts = [
 ];
 
 app.get('/api/persons', (request, response) => {
+  console.log(request);
   response.json(contacts);
+});
+
+app.get('/info', (request, response) => {
+  console.log('#DEBUG -> Call to info');
+  console.log('#DEBUG -> Request object', request);
+
+  let htmlResponse = `<p>Phonebook has info for ${contacts.length} people</p>`;
+  htmlResponse += '<br/>';
+  htmlResponse += `<p>${new Date()}</p>`;
+
+  response.send(htmlResponse);
 });
 
 const PORT = 3001;
