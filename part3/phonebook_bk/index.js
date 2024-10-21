@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(express.json());
 
 let contacts = [
   {
@@ -71,6 +72,53 @@ app.delete('/api/persons/:id', (request, response) => {
   console.log('#DEBUG -> Contacts list filtered');
 
   response.status(204).end();
+});
+
+//** Create a new contact */
+app.post('/api/persons', (request, response) => {
+  console.log(request.body);
+
+  var contact = request.body;
+
+  // Object is null
+  if (!contact || null == contact) {
+    console.log('#DEBUG -> Null object');
+    response.json({ error: 'Null object' }).status(400).end();
+    return;
+  }
+
+  // Name is null or empty
+  if (contact.name == null || contact.name == '') {
+    console.log('#DEBUG -> Name is null or empty');
+    response.json({ error: 'Name is null or empty' }).status(400).end();
+    return;
+  }
+
+  // Number is null or empty
+  if (contact.number == '' || contact.number == null) {
+    console.log('#DEBUG -> Number is null or empty');
+    response.json({ error: 'Number is null or empty' }).status(400).end();
+    return;
+  }
+
+  // If exists the name in the agenda throw the bad request with error
+  if (
+    contacts.find((c) => c.name.toLowerCase() == contact.name.toLowerCase())
+  ) {
+    console.log('#DEBUG -> The contact already exists');
+    response.json({ error: 'The contact already exists' }).status(400).end();
+    return;
+  }
+
+  // Generate new Id
+  var newId = Math.max(...contacts.map((c) => c.id)) + 1;
+  // Update contact with id
+  contact.id = newId;
+  // Update list with new contact
+  contacts = contacts.concat(contact);
+  console.log('#DEBUG -> New contact added');
+  // Response the request with the new contact
+  response.json(contact);
 });
 
 const PORT = 3001;
