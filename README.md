@@ -1,24 +1,31 @@
 # FullStackOpen
 
-https://fullstackopen.com/es/
+Source: https://fullstackopen.com/es/
 
-**NPM Commands**
+## Render
 
-# npm 6.x (desactualizado, pero aun en uso por algunos):
+The endpoint in render (Exercise 3.10): https://fullstackopen-twis.onrender.com
 
-npm create vite@latest part1 --template react
+## Notes
 
-# npm 7+, el doble guion adicional es necesario:
+### Node: npm commands
 
-npm create vite@latest part1 -- --template react
+Several commands that are used recursively to create the basic app/schema of 
+React:
 
-- Start the app (folder where the app is): npm run dev
+* npm 6.x (deprecated, but sometimes is used):
+    * npm create vite@latest part1 --template react
+* npm 7+ (a double dash is needed):
+    * npm create vite@latest part1 -- --template react
+* Start the app (folder where the app is): npm run dev
 
-**Git commands notes:**
+### Git
 
-- Set the user:
-  git config --global user.name "Your name"
-  git config --global user.email "your_email@example.com"
-- Unset the user:
-  git config --global --unset user.name
-  git config --global --unset user.email
+Sometimes it needs to refresh some git commands, so they are listed here:
+
+* Set the user:
+    * git config --global user.name "Your name"
+    * git config --global user.email "your_email@example.com"
+* Unset the user:
+    * git config --global --unset user.name
+    * git config --global --unset user.email
