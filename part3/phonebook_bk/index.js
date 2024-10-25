@@ -7,6 +7,8 @@ morgan.token('body', function (req, res) {
   return JSON.stringify(req.body);
 });
 
+// This line allow us to show the front
+app.use(express.static('dist'));
 app.use(cors());
 app.use(express.json());
 app.use(

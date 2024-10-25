@@ -1,5 +1,7 @@
 import axios from 'axios';
-const baseUrl = 'http://localhost:3001/api/persons';
+// Change the URL because now is on the node server
+// and the URL is relative
+const baseUrl = '/api/persons';
 
 // Get all contacts
 const getAll = () => {
