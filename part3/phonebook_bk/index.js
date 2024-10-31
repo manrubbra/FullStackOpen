@@ -62,24 +62,28 @@ app.get('/api/persons/:id', (request, response, next) => {
   var id = request.params.id;
   console.log('#DEBUG -> Id: ', id);
 
-  var contact = contacts.find((c) => c.id == id);
-
-  if (contact) response.json(contact);
-
-  console.log('Contact not found!');
-  response.status(404).end();
+  Contact.findById(id)
+    .then((result) => {
+      console.log('#DEBUG -> Contact', result);
+      response.json(result);
+    })
+    .catch((error) => next(error));
 });
 
 //** Get the status (number of contacts) at this moment */
 app.get('/info', (request, response, next) => {
   console.log('#DEBUG -> Call to info');
 
-  // Create the html base
-  let htmlResponse = `<p>Phonebook has info for ${contacts.length} people</p>`;
-  htmlResponse += '<br/>';
-  htmlResponse += `<p>${new Date()}</p>`;
+  Contact.find({})
+    .then((result) => {
+      // Create the html base
+      let htmlResponse = `<p>Phonebook has info for ${result.length} people</p>`;
+      htmlResponse += '<br/>';
+      htmlResponse += `<p>${new Date()}</p>`;
 
-  response.send(htmlResponse);
+      response.send(htmlResponse);
+    })
+    .catch((error) => next(error));
 });
 
 //** Delete the contact with the specific Id */
