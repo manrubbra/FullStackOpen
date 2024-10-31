@@ -34,34 +34,15 @@ app.use(
   })
 );
 
-let contacts = [
-  {
-    id: 1,
-    name: 'Arto Hellas',
-    number: '040-123456'
-  },
-  {
-    id: 2,
-    name: 'Ada Lovelace',
-    number: '39-44-5323523'
-  },
-  {
-    id: 3,
-    name: 'Dan Abramov',
-    number: '12-43-234345'
-  },
-  {
-    id: 4,
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122'
-  }
-];
+// Something like a cache
+let contacts = [];
 
 /** Get all contacts from Contacts */
 app.get('/api/persons', (request, response) => {
   console.log('#DEBUG -> Retrieve contacts from DB');
   Contact.find({}).then((result) => {
     console.log('#DEBUG -> Result:', result);
+    contacts = result;
     response.json(result);
   });
 });
@@ -150,15 +131,18 @@ app.post('/api/persons', (request, response) => {
     return;
   }
 
-  // Generate new Id
-  var newId = Math.max(...contacts.map((c) => c.id)) + 1;
-  // Update contact with id
-  contact.id = newId;
-  // Update list with new contact
-  contacts = contacts.concat(contact);
+  const newContact = new Contact({
+    name: contact.name,
+    number: contact.number
+  });
+
   console.log('#DEBUG -> New contact added');
-  // Response the request with the new contact
-  response.json(contact);
+  newContact.save().then((result) => {
+    console.log('#DEBUG -> New contact:', result);
+    contacts = contacts.concat(result);
+    // Response the request with the new contact
+    response.json(contact);
+  });
 });
 
 const PORT = 3001;
