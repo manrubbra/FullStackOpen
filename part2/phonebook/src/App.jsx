@@ -186,7 +186,7 @@ const App = () => {
             setBackupPersons(aux);
             filterAgenda(filter, aux);
             var message = {
-              message: `${deleted.name} was deleted`,
+              message: `${name} was deleted`,
               type: 'success'
             };
             setMessage(message);

@@ -84,10 +84,17 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(404).end();
   }
 
-  contacts = contacts.filter((c) => c.id != id);
-  console.log('#DEBUG -> Contacts list filtered');
-
-  response.status(204).end();
+  // Delete from DB
+  Contact.findByIdAndDelete(id)
+    .then((result) => {
+      console.log('#DEBUG -> Result', result);
+      contacts = contacts.filter((c) => c.id != id);
+      response.status(204).end();
+    })
+    .catch((error) => {
+      console.log('#ERROR -> Message:', error.message);
+      response.status(500).send({ error: error.message });
+    });
 });
 
 //** Create a new contact */
