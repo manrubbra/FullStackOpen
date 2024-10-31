@@ -158,6 +158,18 @@ app.post('/api/persons', (request, response, next) => {
     });
 });
 
+//** Update contact */
+app.put('/api/persons/:id', (request, response, next) => {
+  console.log('#DEBUG -> Update contact', request.params.id);
+  var body = request.body;
+
+  Contact.findByIdAndUpdate(request.params.id, body, { new: true })
+    .then((result) => {
+      response.json(result);
+    })
+    .catch((error) => next(error));
+});
+
 app.use(errorHandler);
 
 const PORT = process.env.PORT;
