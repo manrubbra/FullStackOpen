@@ -1,6 +1,13 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+
+// Contact module
+const Contact = require('./models/contact');
+
+// Load the variables from environment variables file
+require('dotenv').config();
+
 const app = express();
 
 morgan.token('body', function (req, res) {
@@ -52,7 +59,11 @@ let contacts = [
 
 /** Get all contacts from Contacts */
 app.get('/api/persons', (request, response) => {
-  response.json(contacts);
+  console.log('#DEBUG -> Retrieve contacts from DB');
+  Contact.find({}).then((result) => {
+    console.log('#DEBUG -> Result:', result);
+    response.json(result);
+  });
 });
 
 //** Get the contact with the same id */
