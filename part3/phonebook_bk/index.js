@@ -37,18 +37,28 @@ app.use(
 // Something like a cache
 let contacts = [];
 
+//** Method to handle the erros */
+const errorHandler = (error, request, response, next) => {
+  console.log('#ERROR -> Something went wrong!');
+  response.status(500).send({ error: error.message });
+};
+
 /** Get all contacts from Contacts */
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   console.log('#DEBUG -> Retrieve contacts from DB');
-  Contact.find({}).then((result) => {
-    console.log('#DEBUG -> Result:', result);
-    contacts = result;
-    response.json(result);
-  });
+  Contact.find({})
+    .then((result) => {
+      console.log('#DEBUG -> Result:', result);
+      contacts = result;
+      response.json(result);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 //** Get the contact with the same id */
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
   var id = request.params.id;
   console.log('#DEBUG -> Id: ', id);
 
@@ -61,7 +71,7 @@ app.get('/api/persons/:id', (request, response) => {
 });
 
 //** Get the status (number of contacts) at this moment */
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   console.log('#DEBUG -> Call to info');
 
   // Create the html base
@@ -73,32 +83,23 @@ app.get('/info', (request, response) => {
 });
 
 //** Delete the contact with the specific Id */
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   var id = request.params.id;
-  console.log('#DEBUG -> Delete contact with id:');
-
-  var contact = contacts.find((c) => c.id == id);
-
-  if (!contact) {
-    console.log('Contact not found!');
-    response.status(404).end();
-  }
+  console.log('#DEBUG -> Delete contact with id:', id);
 
   // Delete from DB
   Contact.findByIdAndDelete(id)
     .then((result) => {
       console.log('#DEBUG -> Result', result);
-      contacts = contacts.filter((c) => c.id != id);
       response.status(204).end();
     })
     .catch((error) => {
-      console.log('#ERROR -> Message:', error.message);
-      response.status(500).send({ error: error.message });
+      next(error);
     });
 });
 
 //** Create a new contact */
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   console.log(request.body);
 
   // Change this line because I need to do an object copy. If I
@@ -144,13 +145,20 @@ app.post('/api/persons', (request, response) => {
   });
 
   console.log('#DEBUG -> New contact added');
-  newContact.save().then((result) => {
-    console.log('#DEBUG -> New contact:', result);
-    contacts = contacts.concat(result);
-    // Response the request with the new contact
-    response.json(contact);
-  });
+  newContact
+    .save()
+    .then((result) => {
+      console.log('#DEBUG -> New contact:', result);
+      contacts = contacts.concat(result);
+      // Response the request with the new contact
+      response.json(contact);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
