@@ -178,7 +178,7 @@ app.put('/api/persons/:id', (request, response, next) => {
   var body = request.body;
   // Active validation
   const opts = { new: true, runValidators: true };
-  Contact.findByIdAndUpdate(request.params.id, body, opt)
+  Contact.findByIdAndUpdate(request.params.id, body, opts)
     .then((result) => {
       response.json(result);
     })

@@ -134,6 +134,14 @@ const App = () => {
               };
               setMessage(message);
             });
+          })
+          .catch((error) => {
+            console.log('#ERROR -> ', error.response.data.error);
+            var message = {
+              message: error.response.data.error,
+              type: 'error'
+            };
+            setMessage(message);
           });
       } else {
         // Cancel the process
