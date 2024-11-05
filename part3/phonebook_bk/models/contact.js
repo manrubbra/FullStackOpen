@@ -16,8 +16,13 @@ mongoose
     console.log('#ERROR -> Message:', error.message);
   });
 
+// Change the schema to set the validation too
 const contactSchema = new mongoose.Schema({
-  name: String,
+  name: {
+    type: String,
+    minLength: 3,
+    required: true
+  },
   number: String
 });
 

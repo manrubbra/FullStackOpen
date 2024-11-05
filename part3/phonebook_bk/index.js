@@ -40,7 +40,17 @@ let contacts = [];
 //** Method to handle the erros */
 const errorHandler = (error, request, response, next) => {
   console.log('#ERROR -> Something went wrong!');
-  response.status(500).send({ error: error.message });
+
+  if (error.name === 'CastError') {
+    console.log('#DEBUG -> malformatted id');
+    return response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    console.log('#DEBUG -> ', error.message);
+    return response.status(400).json({ error: error.message });
+  } else {
+    console.log('#DEBUG -> ', error.message);
+    return response.status(500).send({ error: error.message });
+  }
 };
 
 /** Get all contacts from Contacts */
@@ -166,8 +176,9 @@ app.post('/api/persons', (request, response, next) => {
 app.put('/api/persons/:id', (request, response, next) => {
   console.log('#DEBUG -> Update contact', request.params.id);
   var body = request.body;
-
-  Contact.findByIdAndUpdate(request.params.id, body, { new: true })
+  // Active validation
+  const opts = { new: true, runValidators: true };
+  Contact.findByIdAndUpdate(request.params.id, body, opt)
     .then((result) => {
       response.json(result);
     })

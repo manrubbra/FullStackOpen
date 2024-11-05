@@ -143,26 +143,36 @@ const App = () => {
       var auxContact = { ...newPerson, id: nextId(backupPersons) };
 
       // Keep the contact in the backend
-      personsServices.create(auxContact).then((data) => {
-        console.log('#DEBUG - New contact: ', data);
-        setBackupPersons(backupPersons.concat(auxContact));
-        filterAgenda(filter, backupPersons.concat(auxContact));
+      personsServices
+        .create(auxContact)
+        .then((data) => {
+          console.log('#DEBUG - New contact: ', data);
+          setBackupPersons(backupPersons.concat(auxContact));
+          filterAgenda(filter, backupPersons.concat(auxContact));
 
-        var message = {
-          message: `${data.name} was added`,
-          type: 'success'
-        };
-        setMessage(message);
-      });
+          var message = {
+            message: `${data.name} was added`,
+            type: 'success'
+          };
+          setMessage(message);
+          setNewPerson({
+            name: '',
+            number: '',
+            id: 0
+          });
+        })
+        .catch((error) => {
+          console.log('#ERROR -> ', error.response.data.error);
+          var message = {
+            message: error.response.data.error,
+            type: 'error'
+          };
+          setMessage(message);
+        });
     }
     setTimeout(() => {
       setMessage({ message: null, type: 'success' });
     }, 2500);
-    setNewPerson({
-      name: '',
-      number: '',
-      id: 0
-    });
   };
 
   // Control event delete contact
