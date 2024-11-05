@@ -8,13 +8,26 @@ const url = process.env.MONGODB_URI;
 console.log('#DEBUG -> Connecting to ', url);
 
 mongoose
-  .connect(url)
+  .connect(url, {
+    retryWrites: true,
+    wtimeoutMS: 60000, // Timeout de escritura en milisegundos
+    connectTimeoutMS: 60000
+  })
   .then((result) => {
     console.log('#DEBUG -> Connected to DB');
   })
   .catch((error) => {
     console.log('#ERROR -> Message:', error.message);
   });
+
+// mongoose
+//   .connect(url)
+//   .then((result) => {
+//     console.log('#DEBUG -> Connected to DB');
+//   })
+//   .catch((error) => {
+//     console.log('#ERROR -> Message:', error.message);
+//   });
 
 // Change the schema to set the validation too
 const contactSchema = new mongoose.Schema({
